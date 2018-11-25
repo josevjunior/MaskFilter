@@ -16,4 +16,4 @@ A execution example below:
 
 Feel free to open a issue if necessary. Fixes and improvement will be pushed as soon as possible.
 
-Current version: *0.1-Snapshot*
+Current version: **0.1-Snapshot**
