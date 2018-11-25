@@ -1,9 +1,14 @@
 package br.com.filter.util;
 
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextInputControl;
+import javax.swing.text.MaskFormatter;
 
 /**
  * A filter to handle user input using the mask symbol format.<br>
@@ -108,7 +113,15 @@ public class MaskFilter implements UnaryOperator<TextFormatter.Change> {
             t.setCaretPosition(0);
             return t;
         }
-
+        
+        //Workaround to initial text called by setText()
+        if(t.getControlText().isEmpty() && !t.getControlNewText().isEmpty()){
+            t.setText(formatWithMaskFormatter(t.getText()));
+            t.setAnchor(0);
+            t.setCaretPosition(0);
+            return t;
+        }
+        
         if (t.isAdded()) {
             t = adjustAddedText(t);
         } else if (t.isDeleted()) {
@@ -120,6 +133,18 @@ public class MaskFilter implements UnaryOperator<TextFormatter.Change> {
         return t;
     }
 
+    private String formatWithMaskFormatter(String initialText){
+        try {
+            MaskFormatter maskFormatter = new MaskFormatter(mask);
+            maskFormatter.setPlaceholder(placeholder);
+            maskFormatter.setValueContainsLiteralCharacters(false);
+            
+            return maskFormatter.valueToString(initialText);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    
     private TextFormatter.Change adjustDeletedText(TextFormatter.Change change) {
         int deleteStart = change.getRangeStart();
         int deleteEnd = change.getRangeEnd();
@@ -208,7 +233,7 @@ public class MaskFilter implements UnaryOperator<TextFormatter.Change> {
 
             }
         }
-
+        
         change.setText(newAddedText.toString());
         change.setRange(change.getRangeStart(), Math.min(maskMaxLegth, change.getRangeStart() + newAddedText.length()));
 

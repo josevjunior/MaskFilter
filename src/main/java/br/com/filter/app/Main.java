@@ -28,11 +28,8 @@ public class Main extends Application{
     
     private Parent buildView(){
         
-        TextField myTextField = new TextField();
-        myTextField.setTextFormatter(new TextFormatter(new MaskFilter("##/##/####")));
-        
          TextField tfCpf = new TextField();
-        tfCpf.setTextFormatter(new TextFormatter(new MaskFilter("##/##/####")));
+        tfCpf.setTextFormatter(new TextFormatter(new MaskFilter("###.###.###-##")));
         
         TextField tfCep = new TextField();
         tfCep.setTextFormatter(new TextFormatter(new MaskFilter("#####-###", '_')));
